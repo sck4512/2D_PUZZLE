@@ -13,9 +13,9 @@ public class StageButton : MonoBehaviour
 
     public void UpdateStageLevelStarRank(int _Rank)
     {
+        textAndStar.SetActive(true);
         if (_Rank == 0)
             return;
-        textAndStar.SetActive(true);
         for(int i = 0; i < _Rank; i++)
         {
             starImages[i].gameObject.SetActive(true);

@@ -94,8 +94,8 @@ public class DataManager : GenericSingleton<DataManager>
         jsonManager?.LoadStageData();
         //시작하자마자 랭크 관련 데이터 불러옴
         isLoaded = jsonManager?.LoadRankData();
-        //데이터 적용
 
+        //데이터 적용
         SetStageData();
         SetRankData();
     }

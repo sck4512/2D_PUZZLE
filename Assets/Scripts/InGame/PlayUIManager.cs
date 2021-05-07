@@ -29,8 +29,11 @@ public class PlayUIManager : GenericSingleton<PlayUIManager>
     [SerializeField] GameObject gaugeUI;
     [SerializeField] GameObject savedMessageBox;
 
+    //Stage
     GameObject[] stars;
     Transform[] gameOverDatas;
+    Button nextStageButton;
+    //Challenge
     Button gaugeButton;
     Image gaugeImage;
 
@@ -306,9 +309,9 @@ public class PlayUIManager : GenericSingleton<PlayUIManager>
                     comboNumbers[Index].sprite = numberSprites[num];
                 }
             }
-            else
+            else if (i == 2) //스코어
             {
-                //Challange일때
+                //Challange일때는 시간
                 if (GameManager.Instance.CurStage == 0)
                 {
                     //시간 계산
@@ -327,7 +330,8 @@ public class PlayUIManager : GenericSingleton<PlayUIManager>
                     int Rank = GameManager.Instance.Rank;
                     if (Rank > DataManager.Instance.stageRank[GameManager.Instance.CurStage - 1])
                         DataManager.Instance.stageRank[GameManager.Instance.CurStage - 1] = Rank;
-
+                    
+                    //별 갯수 업데이트
                     for (int Index = 0; Index < Rank; Index++)
                     {
                         gameOverDatas[i].transform.GetChild(0).GetChild(Index).gameObject.SetActive(true);
@@ -342,6 +346,11 @@ public class PlayUIManager : GenericSingleton<PlayUIManager>
                             DataManager.Instance.opendStage = GameManager.Instance.CurStage;
                     }
                 }
+            }
+            else if (i == 3) //버튼의 경우
+            {
+                if (GameManager.Instance.Rank == 0 && GameManager.Instance.CurStage != 10)
+                    nextStageButton.interactable = false;
             }
         }
 
@@ -369,6 +378,12 @@ public class PlayUIManager : GenericSingleton<PlayUIManager>
         {
             gameOverDatas[i] = gameOverMessageBox.transform.GetChild(i);
         }
+
+        //마지막 스테이지는 안함
+        if (GameManager.Instance.CurStage == 10)
+            return;
+        //맨 마지막에 있는 버튼임
+        nextStageButton = gameOverDatas[gameOverDatas.Length - 1].GetChild(2).GetComponent<Button>();
     }
 
 }

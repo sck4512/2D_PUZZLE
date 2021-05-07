@@ -70,8 +70,11 @@ public class Input : MonoBehaviour, MyInput.IMyControllerActions
             {
                 //Challenge에는 상관은 없으나 그냥 함
                 --GameManager.Instance.MissCount;
+                
+                //Challenge인 경우에만
+                if(GameManager.Instance.CurStage == 0)
+                    GameManager.Instance.UpdateLife(2f);
 
-                GameManager.Instance.UpdateLife(2f);
                 //없는 젤리 클릭시 콤보도 초기화
                 GameManager.Instance.Combo = 0;
                 //Miss글자도 띄움

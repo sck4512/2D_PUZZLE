@@ -16,5 +16,5 @@ public class GenericSingleton<T> : MonoBehaviour where T : Component
             return instance;
         }
     }
-
+    
 }
