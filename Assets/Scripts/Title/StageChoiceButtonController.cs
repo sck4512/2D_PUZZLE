@@ -5,12 +5,10 @@ using UnityEngine;
 public class StageChoiceButtonController : MonoBehaviour
 {
     [SerializeField] StageButton[] stageButtons;
-    Vector3 originPos;
+
 
     void Awake()
     {
-        originPos = new Vector3(245, 392, 0);
-
         int buttonCount = transform.GetChild(1).childCount; 
         stageButtons = new StageButton[buttonCount];
         for(int i = 0; i < buttonCount; i++)
@@ -18,7 +16,7 @@ public class StageChoiceButtonController : MonoBehaviour
             stageButtons[i] = transform.GetChild(1).GetChild(i).GetComponent<StageButton>();
         }
 
-        transform.position = originPos;
+        transform.position = Vector3.zero;
         gameObject.SetActive(false);
     }
 

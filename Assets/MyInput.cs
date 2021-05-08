@@ -25,6 +25,14 @@ public class @MyInput : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Touch"",
+                    ""type"": ""Value"",
+                    ""id"": ""47208d68-5364-462e-8485-71563858a78d"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -36,6 +44,17 @@ public class @MyInput : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Mouse"",
                     ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c08f2a64-2532-44aa-8130-556044400729"",
+                    ""path"": ""<Touchscreen>/press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""Touch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -53,12 +72,24 @@ public class @MyInput : IInputActionCollection, IDisposable
                     ""isOR"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Touch"",
+            ""bindingGroup"": ""Touch"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Touchscreen>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
         }
     ]
 }");
         // MyController
         m_MyController = asset.FindActionMap("MyController", throwIfNotFound: true);
         m_MyController_Click = m_MyController.FindAction("Click", throwIfNotFound: true);
+        m_MyController_Touch = m_MyController.FindAction("Touch", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -109,11 +140,13 @@ public class @MyInput : IInputActionCollection, IDisposable
     private readonly InputActionMap m_MyController;
     private IMyControllerActions m_MyControllerActionsCallbackInterface;
     private readonly InputAction m_MyController_Click;
+    private readonly InputAction m_MyController_Touch;
     public struct MyControllerActions
     {
         private @MyInput m_Wrapper;
         public MyControllerActions(@MyInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Click => m_Wrapper.m_MyController_Click;
+        public InputAction @Touch => m_Wrapper.m_MyController_Touch;
         public InputActionMap Get() { return m_Wrapper.m_MyController; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -126,6 +159,9 @@ public class @MyInput : IInputActionCollection, IDisposable
                 @Click.started -= m_Wrapper.m_MyControllerActionsCallbackInterface.OnClick;
                 @Click.performed -= m_Wrapper.m_MyControllerActionsCallbackInterface.OnClick;
                 @Click.canceled -= m_Wrapper.m_MyControllerActionsCallbackInterface.OnClick;
+                @Touch.started -= m_Wrapper.m_MyControllerActionsCallbackInterface.OnTouch;
+                @Touch.performed -= m_Wrapper.m_MyControllerActionsCallbackInterface.OnTouch;
+                @Touch.canceled -= m_Wrapper.m_MyControllerActionsCallbackInterface.OnTouch;
             }
             m_Wrapper.m_MyControllerActionsCallbackInterface = instance;
             if (instance != null)
@@ -133,6 +169,9 @@ public class @MyInput : IInputActionCollection, IDisposable
                 @Click.started += instance.OnClick;
                 @Click.performed += instance.OnClick;
                 @Click.canceled += instance.OnClick;
+                @Touch.started += instance.OnTouch;
+                @Touch.performed += instance.OnTouch;
+                @Touch.canceled += instance.OnTouch;
             }
         }
     }
@@ -146,8 +185,18 @@ public class @MyInput : IInputActionCollection, IDisposable
             return asset.controlSchemes[m_MouseSchemeIndex];
         }
     }
+    private int m_TouchSchemeIndex = -1;
+    public InputControlScheme TouchScheme
+    {
+        get
+        {
+            if (m_TouchSchemeIndex == -1) m_TouchSchemeIndex = asset.FindControlSchemeIndex("Touch");
+            return asset.controlSchemes[m_TouchSchemeIndex];
+        }
+    }
     public interface IMyControllerActions
     {
         void OnClick(InputAction.CallbackContext context);
+        void OnTouch(InputAction.CallbackContext context);
     }
 }

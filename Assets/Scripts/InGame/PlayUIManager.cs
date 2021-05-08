@@ -380,7 +380,7 @@ public class PlayUIManager : GenericSingleton<PlayUIManager>
         }
 
         //마지막 스테이지는 안함
-        if (GameManager.Instance.CurStage == 10)
+        if (GameManager.Instance.CurStage == 10 || GameManager.instance.CurStage == 0)
             return;
         //맨 마지막에 있는 버튼임
         nextStageButton = gameOverDatas[gameOverDatas.Length - 1].GetChild(2).GetComponent<Button>();
