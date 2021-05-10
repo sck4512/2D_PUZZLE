@@ -349,8 +349,11 @@ public class PlayUIManager : GenericSingleton<PlayUIManager>
             }
             else if (i == 3) //버튼의 경우
             {
-                if (GameManager.Instance.Rank == 0 && GameManager.Instance.CurStage != 10)
-                    nextStageButton.interactable = false;
+                if(GameManager.Instance.CurStage != 0)
+                {
+                    if (GameManager.Instance.Rank == 0 && GameManager.Instance.CurStage != 10)
+                        nextStageButton.interactable = false;
+                }
             }
         }
 

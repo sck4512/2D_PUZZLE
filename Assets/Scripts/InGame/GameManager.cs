@@ -20,6 +20,7 @@ public struct JellyMapData
 
 public class GameManager : GenericSingleton<GameManager>
 {
+
     [SerializeField] int curStage; //0Àº Challenge
     public int CurStage { get => curStage; }
     int[] targetMiss;
@@ -516,7 +517,7 @@ public class GameManager : GenericSingleton<GameManager>
         DataManager.Instance.jsonManager.SaveRankData();
     }
 
- 
+    
 
     public void DoBomb(Jelly _jelly)
     {
@@ -605,6 +606,8 @@ public class GameManager : GenericSingleton<GameManager>
 
         return jellys;
     }
+
+
     List<Jelly> GetNeighbours(Jelly _Jelly, bool _IsDiagonalOkay)
     {
         List<Jelly> neighbours = new List<Jelly>();
@@ -627,6 +630,43 @@ public class GameManager : GenericSingleton<GameManager>
         }
         return neighbours;
     }
+
+    bool IsTherePang()
+    {
+        for(int y = 0; y < HalfLengthY; y++)
+        {
+            for(int x = 0; x < lengthX; x++)
+            {
+                var type = GameMap[y, x].type;
+                if (type == Type.Bomb || type == Type.LineBomb)
+                    return true;
+                var sameNeighboursCount = GetAllJellySameType(GameMap[y, x]).Count;
+                if (sameNeighboursCount >= 3)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    //void PangAllJelly()
+    //{
+    //    Dictionary<int, JellyMapData> xData = new Dictionary<int, JellyMapData>();
+    //    for(int y = 0; y < HalfLengthY; y++)
+    //    {
+    //        for(int x = 0; x < lengthX; x++)
+    //        {
+
+    //        }
+    //    }
+
+    //    for(int x = 0; x < lengthX; x++)
+    //    {
+    //        xData.Add(x, new JellyMapData(0));
+    //    }
+
+    //}
+
 
     void MoveDownJellyBeforeStart()
     {
