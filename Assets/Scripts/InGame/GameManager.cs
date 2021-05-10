@@ -26,23 +26,21 @@ public class GameManager : GenericSingleton<GameManager>
     int[] targetMiss;
     List<int[]> rankCondition;
     public int MissCount = 0;
-    int curTime = 2;
+    int curTime = 40;
     int TotalScore { get => Score + Combo * 5 - MissCount * 10; }
     public int Rank
     {
         get
         {
-            //int totalScore = TotalScore;
-            //if (totalScore < rankCondition[curStage - 1][0])
-            //    return 0;
-            //else if (totalScore < rankCondition[curStage - 1][1])
-            //    return 1;
-            //else if (totalScore < rankCondition[curStage - 1][2])
-            //    return 2;
-            //else
-            //    return 3;
-
-            return 3;
+            int totalScore = TotalScore;
+            if (totalScore < rankCondition[curStage - 1][0])
+                return 0;
+            else if (totalScore < rankCondition[curStage - 1][1])
+                return 1;
+            else if (totalScore < rankCondition[curStage - 1][2])
+                return 2;
+            else
+                return 3;
         }
     }
     //============================================================
@@ -399,8 +397,9 @@ public class GameManager : GenericSingleton<GameManager>
 
         if (!IsTherePang())
         {
-            //0.1√  ±‚¥Ÿ∑»¥Ÿ∞° ∂≥æÓ∂ﬂ∏≤
+            //0.7√  ±‚¥Ÿ∑»¥Ÿ∞° ªË¡¶
             yield return new WaitForSecondsRealtime(0.7f);
+            SetIsWaiting(true);
             PangAllJelly();
         }
         yield return null;
