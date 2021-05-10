@@ -328,22 +328,12 @@ public class PlayUIManager : GenericSingleton<PlayUIManager>
                 {
                     //랭크를 받아와서 저장(랭크 = 별 갯수)
                     int Rank = GameManager.Instance.Rank;
-                    if (Rank > DataManager.Instance.stageRank[GameManager.Instance.CurStage - 1])
-                        DataManager.Instance.stageRank[GameManager.Instance.CurStage - 1] = Rank;
-                    
+                                       
                     //별 갯수 업데이트
                     for (int Index = 0; Index < Rank; Index++)
                     {
                         gameOverDatas[i].transform.GetChild(0).GetChild(Index).gameObject.SetActive(true);
                         yield return new WaitForSecondsRealtime(0.1f);
-                    }
-
-                    //Rank가 0이상이어야만 저장가능
-                    if(Rank > 0)
-                    {
-                        //데이터에 저장해줌
-                        if (GameManager.Instance.CurStage > DataManager.Instance.opendStage)
-                            DataManager.Instance.opendStage = GameManager.Instance.CurStage;
                     }
                 }
             }

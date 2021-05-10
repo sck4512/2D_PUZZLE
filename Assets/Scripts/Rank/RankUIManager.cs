@@ -41,7 +41,7 @@ public class RankUIManager : MonoBehaviour
 
         for (int i = 0; i < maxTransforms.Length; i++)
         {
-            while (Vector3.Distance(targetPos[i], maxTransforms[i].position) > 0.2f)
+            while (Vector3.Distance(targetPos[i], maxTransforms[i].position) > 1f)
             {
                 maxTransforms[i].transform.position += Vector3.right * Time.fixedDeltaTime * 800f;
                 yield return new WaitForFixedUpdate();

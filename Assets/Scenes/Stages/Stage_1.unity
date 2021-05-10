@@ -2728,7 +2728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dd0e68857b056e4db91a521ed6f0d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curStage: 2
+  curStage: 1
   MissCount: 0
   map: {fileID: 165962759}
   lengthX: 6

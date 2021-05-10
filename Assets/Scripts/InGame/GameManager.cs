@@ -26,21 +26,23 @@ public class GameManager : GenericSingleton<GameManager>
     int[] targetMiss;
     List<int[]> rankCondition;
     public int MissCount = 0;
-    int curTime = 60;
+    int curTime = 2;
     int TotalScore { get => Score + Combo * 5 - MissCount * 10; }
     public int Rank
     {
         get
         {
-            int totalScore = TotalScore;
-            if (totalScore < rankCondition[curStage - 1][0])
-                return 0;
-            else if (totalScore < rankCondition[curStage - 1][1])
-                return 1;
-            else if (totalScore < rankCondition[curStage - 1][2])
-                return 2;
-            else
-                return 3;
+            //int totalScore = TotalScore;
+            //if (totalScore < rankCondition[curStage - 1][0])
+            //    return 0;
+            //else if (totalScore < rankCondition[curStage - 1][1])
+            //    return 1;
+            //else if (totalScore < rankCondition[curStage - 1][2])
+            //    return 2;
+            //else
+            //    return 3;
+
+            return 3;
         }
     }
     //============================================================
@@ -181,7 +183,7 @@ public class GameManager : GenericSingleton<GameManager>
                 DataManager.Instance.SetPlayTimeMax(PlayTime);
 
             //Challenge에서 특정 조건 달성하면 Stage1 열림
-            if (Score > 500 && PlayTime > 60 && MaxCombo > 300)
+            if (Score > 1000 && PlayTime > 50 && MaxCombo > 300)
             {
                 if (DataManager.Instance.opendStage == 0)
                 {
@@ -191,18 +193,16 @@ public class GameManager : GenericSingleton<GameManager>
                     //스테이지 열렸다는 UI박스 
                 }
             }
-
         }
         else //Stage인 경우
         {
             //Stage이면서 현재 스테이지에서 얻은 랭크가 저장된 랭크보다 높을 때
-            if(DataManager.Instance.stageRank[curStage] > Rank)
+            if(DataManager.Instance.stageRank[curStage - 1] < Rank)
             {
-                DataManager.Instance.stageRank[curStage] = Rank;
+                DataManager.Instance.stageRank[curStage - 1] = Rank;
                 //10인 이유가 마지막 스테이지가 아닌 경우
                 if (curStage != 10)
                     DataManager.Instance.opendStage++;
-
                 DataManager.Instance.jsonManager.SaveStageData();
             }
         }
@@ -337,6 +337,11 @@ public class GameManager : GenericSingleton<GameManager>
 
     void MoveDownJellyAndCreateJelly(Dictionary<int, JellyMapData> _xData, float _speed = 20f)
     {
+        StartCoroutine(MoveDownJellyAndCreateJellyRoutine(_xData, _speed));
+    }
+
+    IEnumerator MoveDownJellyAndCreateJellyRoutine(Dictionary<int, JellyMapData> _xData, float _speed = 20f)
+    {
         foreach (var data in _xData)
         {
             for (int y = data.Value.yMin; y < lengthY; y++)
@@ -392,6 +397,13 @@ public class GameManager : GenericSingleton<GameManager>
             }
         }
 
+        if (!IsTherePang())
+        {
+            //0.1초 기다렸다가 떨어뜨림
+            yield return new WaitForSecondsRealtime(0.7f);
+            PangAllJelly();
+        }
+        yield return null;
     }
 
     public void DoHorizontalLinePang(Jelly _jelly)
@@ -649,23 +661,21 @@ public class GameManager : GenericSingleton<GameManager>
         return false;
     }
 
-    //void PangAllJelly()
-    //{
-    //    Dictionary<int, JellyMapData> xData = new Dictionary<int, JellyMapData>();
-    //    for(int y = 0; y < HalfLengthY; y++)
-    //    {
-    //        for(int x = 0; x < lengthX; x++)
-    //        {
+    void PangAllJelly()
+    {
+        List<Jelly> allJelly = new List<Jelly>();
+        for(int y = 0; y < HalfLengthY; y++)
+        {
+            for(int x = 0; x < lengthX; x++)
+            {
+                allJelly.Add(GameMap[y, x]);
+            }
+        }
 
-    //        }
-    //    }
-
-    //    for(int x = 0; x < lengthX; x++)
-    //    {
-    //        xData.Add(x, new JellyMapData(0));
-    //    }
-
-    //}
+        Dictionary<int, JellyMapData> xData = new Dictionary<int, JellyMapData>();
+        RemoveJellys(allJelly, ref xData);
+        MoveDownJellyAndCreateJelly(xData);
+    }
 
 
     void MoveDownJellyBeforeStart()
