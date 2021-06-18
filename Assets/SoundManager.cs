@@ -9,8 +9,8 @@ public enum BGType
 
 public class SoundManager : GenericSingleton<SoundManager>
 {
-    AudioSource audioSources;
     [SerializeField] AudioClip[] bgms;
+    AudioSource audioSources;
 
     void Awake()
     {

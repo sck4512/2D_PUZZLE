@@ -153,6 +153,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  slider: {fileID: 0}
+  bgmButton: {fileID: 0}
+  bgmSource: {fileID: 0}
 --- !u!4 &365150
 Transform:
   m_ObjectHideFlags: 0
