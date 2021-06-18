@@ -69,8 +69,7 @@ public class TitleUIManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("LoadedData");
-        Debug.Log(DataManager.Instance.jsonManager.JsonPlaySavedData);
+        
         sceneFadeEffect.LoadScene(1);
         //SceneManager.LoadScene("Challenge");
     }
@@ -116,6 +115,7 @@ public class TitleUIManager : MonoBehaviour
     //해당 Title신이 불러올때마다 호출되어서 업데이트 해줌
     void Start()
     {
+        DataManager.Instance.opendStage = 10;
         stageChoiceButtonController.UpdateStageChoiceButtonRankStar(DataManager.Instance.opendStage, DataManager.Instance.stageRank, unlockSprite);
     }
 }

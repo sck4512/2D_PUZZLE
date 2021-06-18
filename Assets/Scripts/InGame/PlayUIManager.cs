@@ -214,22 +214,24 @@ public class PlayUIManager : GenericSingleton<PlayUIManager>
 
     IEnumerator GameOverMessageBoxEnableEventRoutine()
     {
-        Vector3[] targetPos = new Vector3[gameOverDatas.Length];
+        //Vector3[] targetPos = new Vector3[gameOverDatas.Length];
         for(int i = 0; i < gameOverDatas.Length; i++)
         {
-            targetPos[i] = gameOverDatas[i].transform.position;
-            gameOverDatas[i].transform.position -= Vector3.right * 800f;
+            //targetPos[i] = gameOverDatas[i].transform.position;
+            //gameOverDatas[i].transform.position -= Vector3.right * 800f;
+            gameOverDatas[i].gameObject.SetActive(false);
         }
 
         for(int i = 0; i < gameOverDatas.Length; i++)
         {
-            while (Vector3.Distance(targetPos[i], gameOverDatas[i].transform.position) > 0.2f)
-            {
-                gameOverDatas[i].transform.position += Vector3.right * 0.02f * 800f;
-                yield return new WaitForSecondsRealtime(0.001f);
-            }
-            gameOverDatas[i].transform.position = targetPos[i];
+            //while (Vector3.Distance(targetPos[i], gameOverDatas[i].transform.position) > 0.2f)
+            //{
+            //    gameOverDatas[i].transform.position += Vector3.right * 0.02f * 800f;
+            //    yield return new WaitForSecondsRealtime(0.001f);
+            //}
+            //gameOverDatas[i].transform.position = targetPos[i];
 
+            gameOverDatas[i].gameObject.SetActive(true);
             if(i == 0)
             {
                 //도착하고 난 뒤

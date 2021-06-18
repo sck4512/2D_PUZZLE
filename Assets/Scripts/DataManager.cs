@@ -10,7 +10,7 @@ public class DataManager : GenericSingleton<DataManager>
     public int MaxScore { get; private set; }
     public int MaxPlayTime { get; private set; }
     public Dictionary<Type, int> PangedJellyCount;
-    public int opendStage = 0;  // 0이면 전부 해금 못한 상태
+    public int opendStage = 4;  // 0이면 전부 해금 못한 상태
     public int[] stageRank; //0이면 별 0개
     bool? isLoaded;
 
@@ -98,8 +98,5 @@ public class DataManager : GenericSingleton<DataManager>
         //데이터 적용
         SetStageData();
         SetRankData();
-
-
     }
-
 }

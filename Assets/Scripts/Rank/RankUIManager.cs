@@ -28,29 +28,31 @@ public class RankUIManager : MonoBehaviour
     IEnumerator StartRankUIEventRoutine()
     {
         //¸Æ½º ¾Öµé ¿Å±è
-        Vector3[] targetPos = new Vector3[maxTransforms.Length];
+        //Vector3[] targetPos = new Vector3[maxTransforms.Length];
         for(int i = 0; i < maxTransforms.Length; i++)
         {
-            targetPos[i] = maxTransforms[i].position;
-            maxTransforms[i].position -= Vector3.right * 800f;
+            //targetPos[i] = maxTransforms[i].position;
+            //maxTransforms[i].position -= Vector3.right *100f;
+            maxTransforms[i].gameObject.SetActive(false);
         }
 
-        //ÆÎ ¿Å±è
-        Vector3 pangTargetPos = pangedJellyTransform.position;
-        pangedJellyTransform.position -= Vector3.right * 800f;
-
+        //ÆÎ Ä³¸¯ÅÍ ¿Å±è
+        //Vector3 pangTargetPos = pangedJellyTransform.position;
+        //pangedJellyTransform.position -= Vector3.right * 100f;
+        pangedJellyTransform.gameObject.SetActive(false);
         for (int i = 0; i < maxTransforms.Length; i++)
         {
-            while (Vector3.Distance(targetPos[i], maxTransforms[i].position) > 1f)
-            {
-                maxTransforms[i].transform.position += Vector3.right * Time.fixedDeltaTime * 800f;
-                yield return new WaitForFixedUpdate();
-            }
+            //while (Vector3.Distance(targetPos[i], maxTransforms[i].position) > 1f)
+            //{
+            //    maxTransforms[i].transform.position += Vector3.right * Time.fixedDeltaTime * 100f;
+            //    yield return new WaitForFixedUpdate();
+            //}
 
 
             if (i == 0)
             {
                 //µµÂøÇÏ°í ³­ µÚ
+                maxTransforms[0].gameObject.SetActive(true);
                 float elapsedTime = 0;
                 while (elapsedTime < 3f)
                 {
@@ -92,6 +94,7 @@ public class RankUIManager : MonoBehaviour
             else if (i == 1)
             {
                 //µµÂøÇÏ°í ³­ µÚ
+                maxTransforms[1].gameObject.SetActive(true);
                 float elapsedTime = 0;
                 while (elapsedTime < 3f)
                 {
@@ -130,6 +133,7 @@ public class RankUIManager : MonoBehaviour
             else
             {
                 //Áö³­ ½Ã°£
+                maxTransforms[2].gameObject.SetActive(true);
                 int minute = DataManager.Instance.MaxPlayTime / 60;
                 int second = DataManager.Instance.MaxPlayTime % 60;
 
@@ -142,11 +146,15 @@ public class RankUIManager : MonoBehaviour
         }
 
         //ÆÎ
-        while (Vector3.Distance(pangTargetPos, pangedJellyTransform.position) > 0.1f)
-        {
-            pangedJellyTransform.position += Vector3.right * Time.fixedDeltaTime * 1000f;
-            yield return new WaitForSecondsRealtime(0.001f);
-        }
+        //while (Vector3.Distance(pangTargetPos, pangedJellyTransform.position) > 0.1f)
+        //{
+        //    pangedJellyTransform.position += Vector3.right * Time.fixedDeltaTime * 1000f;
+        //    yield return new WaitForSecondsRealtime(0.001f);
+        //}
+
+        yield return new WaitForSeconds(0.2f);
+
+        pangedJellyTransform.gameObject.SetActive(true);
 
         yellowText.text = DataManager.Instance.PangedJellyCount[Type.Yellow].ToString();
         redText.text = DataManager.Instance.PangedJellyCount[Type.Red].ToString();

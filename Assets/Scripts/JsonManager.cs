@@ -15,9 +15,9 @@ public class JsonManager : MonoBehaviour
 
     void Awake()
     {
-        ContinueFilePath = Path.Combine(Application.dataPath, "JsonPlayData.json");
-        rankFilePath = Path.Combine(Application.dataPath, "JsonRankData.json");
-        stageFilePath = Path.Combine(Application.dataPath, "JsonStageData.json");
+        ContinueFilePath = Path.Combine(Application.persistentDataPath, "JsonPlayData.json");
+        rankFilePath = Path.Combine(Application.persistentDataPath, "JsonRankData.json");
+        stageFilePath = Path.Combine(Application.persistentDataPath, "JsonStageData.json");
     }
 
     public void SavePlayData()
@@ -30,6 +30,7 @@ public class JsonManager : MonoBehaviour
         jsonData.playData.Gauge = GameManager.Instance.Gauge;
         jsonData.playData.Life = GameManager.Instance.Life;
         jsonData.playData.Score = GameManager.Instance.Score;
+
 
         int lengthY = GameManager.Instance.lengthY;
         int lengthX = GameManager.Instance.lengthX;

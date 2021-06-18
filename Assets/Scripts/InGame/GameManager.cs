@@ -8,15 +8,15 @@ using Random = UnityEngine.Random;
 //µð¹ö±ë¿ë
 using Debug = UnityEngine.Debug;
 
-public struct JellyMapData
-{
-    public int yMin;
+//public struct JellyMapData
+//{
+//    public int yMin;
 
-    public JellyMapData(int _yMin)
-    {
-        yMin = _yMin;
-    }
-}
+//    public JellyMapData(int _yMin)
+//    {
+//        yMin = _yMin;
+//    }
+//}
 
 public class GameManager : GenericSingleton<GameManager>
 {
@@ -238,6 +238,15 @@ public class GameManager : GenericSingleton<GameManager>
         int range = 8;
         if (maxBombCount == bombCount)
             range = 6;
+
+        if (1 <= curStage && curStage <= 4)
+            range = 4;
+        else if (4 < curStage && curStage <= 8)
+            range = 5;
+        else if (curStage > 8 && range == 8)
+            range = 7;
+
+    
         Type type = (Type)Random.Range(0, range);
 
         if (type == Type.Bomb || type == Type.LineBomb)
@@ -264,7 +273,7 @@ public class GameManager : GenericSingleton<GameManager>
         }
     }
 
-
+    //==================================================
     public void DoPang(Jelly _jelly)
     {
         IsPangSuccess = false;
@@ -278,7 +287,7 @@ public class GameManager : GenericSingleton<GameManager>
         if (jellys.Count >= 3)
         {
             SetIsWaiting(true);
-            Dictionary<int, JellyMapData> xData = new Dictionary<int, JellyMapData>();
+            Dictionary<int, int> xData = new Dictionary<int, int>();
 
             //Á©¸® »èÁ¦
             RemoveJellys(jellys, ref xData);
@@ -292,7 +301,7 @@ public class GameManager : GenericSingleton<GameManager>
         yield return null;
     }
 
-    void RemoveJellys(List<Jelly> _jellys, ref Dictionary<int, JellyMapData> _xData)
+    void RemoveJellys(List<Jelly> _jellys, ref Dictionary<int, int> _xData)
     {
         int comboCount = 0;
 
@@ -301,12 +310,12 @@ public class GameManager : GenericSingleton<GameManager>
             if (_xData.ContainsKey(jelly.CurPos.x))
             {
                 var data = _xData[jelly.CurPos.x];
-                if (data.yMin > jelly.CurPos.y)
-                    data.yMin = jelly.CurPos.y;
+                if (data > jelly.CurPos.y)
+                    data = jelly.CurPos.y;
                 _xData[jelly.CurPos.x] = data;
             }
             else
-                _xData.Add(jelly.CurPos.x, new JellyMapData(jelly.CurPos.y));
+                _xData.Add(jelly.CurPos.x, jelly.CurPos.y);
 
             //¿ø·¡ Á©¸® null
             Type jellyType = jelly.type;
@@ -333,16 +342,16 @@ public class GameManager : GenericSingleton<GameManager>
         DataManager.Instance.jsonManager.SaveRankData();
     }
 
-    void MoveDownJellyAndCreateJelly(Dictionary<int, JellyMapData> _xData, float _speed = 20f)
+    void MoveDownJellyAndCreateJelly(Dictionary<int, int> _xData, float _speed = 20f)
     {
         StartCoroutine(MoveDownJellyAndCreateJellyRoutine(_xData, _speed));
     }
 
-    IEnumerator MoveDownJellyAndCreateJellyRoutine(Dictionary<int, JellyMapData> _xData, float _speed = 20f)
+    IEnumerator MoveDownJellyAndCreateJellyRoutine(Dictionary<int, int> _xData, float _speed = 20f)
     {
         foreach (var data in _xData)
         {
-            for (int y = data.Value.yMin; y < lengthY; y++)
+            for (int y = data.Value; y < lengthY; y++)
             {
                 if (GameMap[y, data.Key] == null)
                 {
@@ -412,7 +421,7 @@ public class GameManager : GenericSingleton<GameManager>
 
     IEnumerator DoHorizontalLinePangRoutine(Jelly _jelly)
     {
-        Dictionary<int, JellyMapData> xData = new Dictionary<int, JellyMapData>();
+        Dictionary<int, int> xData = new Dictionary<int, int>();
         int yIndex = _jelly.CurPos.y;
         int comboCount = 0;
         for (int x = 0; x < lengthX; x++)
@@ -429,7 +438,7 @@ public class GameManager : GenericSingleton<GameManager>
             Spark.SetActive(true);
             Spark.transform.position = new Vector3(x, yIndex, -0.5f);
 
-            xData.Add(x, new JellyMapData(yIndex));
+            xData.Add(x, yIndex);
 
             ++comboCount;
             DataManager.Instance.AddPangedJellyCount(jellyType);
@@ -454,7 +463,7 @@ public class GameManager : GenericSingleton<GameManager>
 
     IEnumerator DoVerticalLinePangRoutine(Jelly _jelly)
     {
-        Dictionary<int, JellyMapData> xData = new Dictionary<int, JellyMapData>();
+        Dictionary<int, int> xData = new Dictionary<int, int>();
         int xIndex = _jelly.CurPos.x;
         int comboCount = 0;
         for (int y = 0; y < HalfLengthY; y++)
@@ -474,7 +483,7 @@ public class GameManager : GenericSingleton<GameManager>
 
             ++comboCount;
             if (!xData.ContainsKey(xIndex))
-                xData.Add(xIndex, new JellyMapData(y));
+                xData.Add(xIndex, y);
 
             DataManager.Instance.AddPangedJellyCount(jellyType);
             yield return new WaitForSeconds(0.1f);
@@ -495,7 +504,7 @@ public class GameManager : GenericSingleton<GameManager>
 
     public void DoPangSameJelly(Type _jelly)
     {
-        Dictionary<int, JellyMapData> xData = new Dictionary<int, JellyMapData>();
+        Dictionary<int, int> xData = new Dictionary<int, int>();
 
         int comboCount = 0;
         for(int y = 0; y < HalfLengthY; y++)
@@ -517,7 +526,7 @@ public class GameManager : GenericSingleton<GameManager>
                 ++comboCount;
 
                 if (!xData.ContainsKey(x))
-                    xData.Add(x, new JellyMapData(y));
+                    xData.Add(x, y);
             }
         }
         DataManager.Instance.AddPangedJellyCount(_jelly, comboCount);
@@ -537,7 +546,7 @@ public class GameManager : GenericSingleton<GameManager>
         neighbours.Add(_jelly);
 
 
-        Dictionary<int, JellyMapData> xData = new Dictionary<int, JellyMapData>();
+        Dictionary<int, int> xData = new Dictionary<int, int>();
 
         int comboCount = 0;
         foreach (var jelly in neighbours)
@@ -557,13 +566,11 @@ public class GameManager : GenericSingleton<GameManager>
             ++comboCount;
 
             if (!xData.ContainsKey(jelly.CurPos.x))
-                xData.Add(jelly.CurPos.x, new JellyMapData(jelly.CurPos.y));
+                xData.Add(jelly.CurPos.x, jelly.CurPos.y);
             else
-            {
-                JellyMapData jellyMapData = new JellyMapData(xData[jelly.CurPos.x].yMin);
-                if (xData[jelly.CurPos.x].yMin > jelly.CurPos.y)
-                    jellyMapData.yMin = jelly.CurPos.y;
-                xData[jelly.CurPos.x] = jellyMapData;
+            {                
+                if (xData[jelly.CurPos.x] > jelly.CurPos.y)
+                    xData[jelly.CurPos.x] = jelly.CurPos.y;               
             }
 
             DataManager.Instance.AddPangedJellyCount(jelly.type);
@@ -671,7 +678,7 @@ public class GameManager : GenericSingleton<GameManager>
             }
         }
 
-        Dictionary<int, JellyMapData> xData = new Dictionary<int, JellyMapData>();
+        Dictionary<int, int> xData = new Dictionary<int, int>();
         RemoveJellys(allJelly, ref xData);
         MoveDownJellyAndCreateJelly(xData);
     }
@@ -684,7 +691,7 @@ public class GameManager : GenericSingleton<GameManager>
 
     IEnumerator MoveDownJellyBeforeStartRoutine()
     {
-        float speed = 10f;
+        float speed = 20f;
         if (curStage == 0)
             speed = 30f;
 
@@ -705,6 +712,7 @@ public class GameManager : GenericSingleton<GameManager>
         map.transform.position = target;
         IsWaiting = false;
     }
+    //========================================================
 
 
     //Challenge¸Ê¸¸
@@ -744,7 +752,7 @@ public class GameManager : GenericSingleton<GameManager>
     {
         Pool = GetComponent<PoolManager>();
         GameMap = new Jelly[lengthY, lengthX];
-        poolTransform = Pool.gameObject.transform;
+        poolTransform = Pool.transform;
         stopWatch = new Stopwatch();
 
         ListingDelegate();
@@ -819,9 +827,9 @@ public class GameManager : GenericSingleton<GameManager>
             rankCondition[8][1] = 1620;
             rankCondition[8][2] = 1760;
 
-            rankCondition[9][0] = 1640;
-            rankCondition[9][1] = 1890;
-            rankCondition[9][2] = 2000;
+            rankCondition[9][0] = 1940;
+            rankCondition[9][1] = 2500;
+            rankCondition[9][2] = 3500;
 
 
 
